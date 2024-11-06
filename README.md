@@ -1,6 +1,6 @@
 # Elastic stack (ELK) on Docker
 
-[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.11.3-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
+[![Elastic Stack version](https://img.shields.io/badge/Elastic%20Stack-8.15.3-00bfb3?style=flat&logo=elastic-stack)](https://www.elastic.co/blog/category/releases)
 [![Build Status](https://github.com/deviantony/docker-elk/workflows/CI/badge.svg?branch=main)](https://github.com/deviantony/docker-elk/actions?query=workflow%3ACI+branch%3Amain)
 [![Join the chat](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#deviantony_docker-elk:gitter.im)
 
@@ -19,7 +19,6 @@ Other available stack variants:
 
 * [`tls`](https://github.com/deviantony/docker-elk/tree/tls): TLS encryption enabled in Elasticsearch, Kibana (opt in),
   and Fleet
-* [`searchguard`](https://github.com/deviantony/docker-elk/tree/searchguard): Search Guard support
 
 > [!IMPORTANT]
 > [Platinum][subscriptions] features are enabled by default for a [trial][license-mngmt] duration of **30 days**. After
@@ -32,14 +31,17 @@ Other available stack variants:
 ## tl;dr
 
 ```sh
-docker-compose up setup
+docker compose up setup
 ```
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
-![Animated demo](https://user-images.githubusercontent.com/3299086/155972072-0c89d6db-707a-47a1-818b-5f976565f95a.gif)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/6f67cbc0-ddee-44bf-8f4d-7fd2d70f5217">
+  <img alt="Animated demo" src="https://github.com/user-attachments/assets/501a340a-e6df-4934-90a2-6152b462c14a">
+</picture>
 
 ---
 
@@ -91,7 +93,7 @@ own_. [sherifabdlnaby/elastdocker][elastdocker] is one example among others of p
 ### Host setup
 
 * [Docker Engine][docker-install] version **18.06.0** or newer
-* [Docker Compose][compose-install] version **1.28.0** or newer (including [Compose V2][compose-v2])
+* [Docker Compose][compose-install] version **2.0.0** or newer
 * 1.5 GB of RAM
 
 > [!NOTE]
@@ -128,7 +130,7 @@ instructions from the [documentation][mac-filesharing] to add more locations.
 ## Usage
 
 > [!WARNING]
-> You must rebuild the stack images with `docker-compose build` whenever you switch branch or update the
+> You must rebuild the stack images with `docker compose build` whenever you switch branch or update the
 > [version](#version-selection) of an already existing stack.
 
 ### Bringing up the stack
@@ -142,13 +144,13 @@ git clone https://github.com/deviantony/docker-elk.git
 Then, initialize the Elasticsearch users and groups required by docker-elk by executing the command:
 
 ```sh
-docker-compose up setup
+docker compose up setup
 ```
 
 If everything went well and the setup completed without error, start the other stack components:
 
 ```sh
-docker-compose up
+docker compose up
 ```
 
 > [!NOTE]
@@ -161,7 +163,7 @@ browser and use the following (default) credentials to log in:
 * password: *changeme*
 
 > [!NOTE]
-> Upon the initial startup, the `elastic`, `logstash_internal` and `kibana_system` Elasticsearch users are intialized
+> Upon the initial startup, the `elastic`, `logstash_internal` and `kibana_system` Elasticsearch users are initialized
 > with the values of the passwords defined in the [`.env`](.env) file (_"changeme"_ by default). The first one is the
 > [built-in superuser][builtin-users], the other two are used by Kibana and Logstash respectively to communicate with
 > Elasticsearch. This task is only performed during the _initial_ startup of the stack. To change users' passwords
@@ -175,7 +177,7 @@ browser and use the following (default) credentials to log in:
 > Refer to [Security settings in Elasticsearch][es-security] to disable authentication.
 
 > [!WARNING]
-> Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstraped privileged `elastic` user.
+> Starting with Elastic v8.0.0, it is no longer possible to run Kibana using the bootstrapped privileged `elastic` user.
 
 The _"changeme"_ password set by default for all aforementioned users is **unsecure**. For increased security, we will
 reset the passwords of all aforementioned Elasticsearch users to random secrets.
@@ -186,15 +188,15 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
     of them.
 
     ```sh
-    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
+    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic
     ```
 
     ```sh
-    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
+    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal
     ```
 
     ```sh
-    docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
+    docker compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system
     ```
 
     If the need for it arises (e.g. if you want to [collect monitoring information][ls-monitoring] through Beats and
@@ -223,7 +225,7 @@ reset the passwords of all aforementioned Elasticsearch users to random secrets.
 1. Restart Logstash and Kibana to re-connect to Elasticsearch using the new passwords
 
     ```sh
-    docker-compose up -d logstash kibana
+    docker compose up -d logstash kibana
     ```
 
 > [!NOTE]
@@ -260,7 +262,7 @@ Elasticsearch data is persisted inside a volume by default.
 In order to entirely shutdown the stack and remove all persisted data, use the following Docker Compose command:
 
 ```sh
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Version selection
@@ -269,7 +271,7 @@ This repository stays aligned with the latest version of the Elastic stack. The 
 version (8.x).
 
 To use a different version of the core Elastic components, simply change the version number inside the [`.env`](.env)
-file. If you are upgrading an existing stack, remember to rebuild all container images using the `docker-compose build`
+file. If you are upgrading an existing stack, remember to rebuild all container images using the `docker compose build`
 command.
 
 > [!IMPORTANT]
@@ -359,7 +361,7 @@ To run the setup container again and re-initialize all users for which a passwor
 simply "up" the `setup` Compose service again:
 
 ```console
-$ docker-compose up setup
+$ docker compose up setup
  ⠿ Container docker-elk-elasticsearch-1  Running
  ⠿ Container docker-elk-setup-1          Created
 Attaching to docker-elk-setup-1
@@ -393,7 +395,7 @@ To add plugins to any ELK component you have to:
 
 1. Add a `RUN` statement to the corresponding `Dockerfile` (eg. `RUN logstash-plugin install logstash-filter-json`)
 1. Add the associated plugin code configuration to the service configuration (eg. Logstash input/output)
-1. Rebuild the images using the `docker-compose build` command
+1. Rebuild the images using the `docker compose build` command
 
 ### How to enable the provided extensions
 
@@ -471,7 +473,6 @@ See the following Wiki pages:
 
 [docker-install]: https://docs.docker.com/get-docker/
 [compose-install]: https://docs.docker.com/compose/install/
-[compose-v2]: https://docs.docker.com/compose/compose-v2/
 [linux-postinstall]: https://docs.docker.com/engine/install/linux-postinstall/
 
 [bootstrap-checks]: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
@@ -497,3 +498,11 @@ See the following Wiki pages:
 [ls-docker]: https://www.elastic.co/guide/en/logstash/current/docker-config.html
 
 [upgrade]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
+
+<!-- markdownlint-configure-file
+{
+  "MD033": {
+    "allowed_elements": [ "picture", "source", "img" ]
+  }
+}
+-->
